@@ -9,7 +9,7 @@ const Container = styled.div`
     margin-bottom: 8px;
 `;
 
-export default class task extends Component {
+export default class Task extends Component {
     render() {
     return (
         <Draggable draggableId={this.props.task.id} index={this.props.index}>
