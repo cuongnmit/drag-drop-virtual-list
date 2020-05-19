@@ -1,0 +1,23 @@
+{
+  "env": {
+      "browser": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/recommended",
+    "airbnb"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "sourceType": "module",
+    "ecmaFeatures": {
+        "jsx": true
+    }
+  },
+  "rules": {
+      "no-case-declarations": "off",
+      "react/prop-types": "off",
+      "no-console": "off"
+  },
+  "parser": "babel-eslint"
+}
