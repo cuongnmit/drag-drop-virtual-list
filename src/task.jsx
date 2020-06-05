@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import { Draggable } from 'react-beautiful-dnd';
 
@@ -7,7 +7,7 @@ const Container = styled.div`
   border-radius: 2px;
   padding: 8px;
   margin-bottom: 8px;
-  background-color: ${(props) => (props.isDragDisabled ? 'lightgrey' : props.isDragging ? 'lightgreen' : 'white')};
+  background-color: ${(props) => (props.isDragging ? 'lightgreen' : 'white')};
   display: flex;
 `;
 
@@ -19,24 +19,22 @@ const Handle = styled.div`
   margin-right: 8px;
 `;
 
-export default class Task extends Component {
-  render() {
-    const isDragDisabled = this.props.task.id === 'task-1';
-    return (
-      <Draggable draggableId={this.props.task.id} index={this.props.index}>
-        {(provided, snapshot) => (
-          <Container
-            {...provided.draggableProps}
-            {...provided.dragHandleProps}
-            ref={provided.innerRef}
-            isDragging={snapshot.isDragging}
-            isDragDisabled={isDragDisabled}
-          >
-            <Handle />
-            {this.props.task.content}
-          </Container>
-        )}
-      </Draggable>
-    );
-  }
+function Task({ task, index }) {
+  return (
+    <Draggable draggableId={task.id} index={index}>
+      {(provided, snapshot) => (
+        <Container
+          {...provided.draggableProps}
+          {...provided.dragHandleProps}
+          ref={provided.innerRef}
+          isDragging={snapshot.isDragging}
+        >
+          <Handle />
+          {task.content}
+        </Container>
+      )}
+    </Draggable>
+  );
 }
+
+export default Task;

@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
 import '@atlaskit/css-reset';
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import initialData from './initial-data';
 import Column from './column';
@@ -11,27 +11,14 @@ const Container = styled.div`
   flex-direction: row;
 `;
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = initialData;
-  }
+function App() {
+  const [state, setState] = useState(initialData);
 
-  onDragStart = (start) => {
-    const homeIndex = this.state.columnOrder.indexOf(start.source.droppableId);
-    this.setState({ homeIndex });
-  }
-
-  onDragUpdate = (update) => {
-    const { destination } = update;
-    const opacity = destination ? destination.index / Object.keys(this.state.tasks).length : 0;
-
-    document.body.style.backgroundColor = `rgba(153, 141, 217, ${opacity})`;
-  }
-
-  onDragEnd = (result) => {
-    this.setState({ homeIndex: null });
-    const { destination, source, draggableId } = result;
+  const onDragEnd = (result) => {
+    setState({ homeIndex: null });
+    const {
+      destination, source, draggableId, type,
+    } = result;
 
     if (!destination) {
       return;
@@ -41,8 +28,22 @@ class App extends React.Component {
       return;
     }
 
-    const start = this.state.columns[source.droppableId];
-    const finish = this.state.columns[destination.droppableId];
+    if (type === 'column') {
+      const newColumnOrder = Array.from(state.columnOrder);
+      newColumnOrder.splice(source.index, 1);
+      newColumnOrder.splice(destination.index, 0, draggableId);
+
+      const newState = {
+        ...state,
+        columnOrder: newColumnOrder,
+      };
+
+      setState(newState);
+      return;
+    }
+
+    const start = state.columns[source.droppableId];
+    const finish = state.columns[destination.droppableId];
 
     if (start === finish) {
       const newTaskIds = Array.from(start.taskIds);
@@ -55,14 +56,14 @@ class App extends React.Component {
       };
 
       const newState = {
-        ...this.state,
+        ...state,
         columns: {
-          ...this.state.columns,
+          ...state.columns,
           [newColumn.id]: newColumn,
         },
       };
 
-      this.setState(newState);
+      setState(newState);
       return;
     }
 
@@ -81,37 +82,38 @@ class App extends React.Component {
     };
 
     const newState = {
-      ...this.state,
+      ...state,
       columns: {
-        ...this.state.columns,
+        ...state.columns,
         [newStart.id]: newStart,
         [newFinish.id]: newFinish,
       },
     };
 
-    this.setState(newState);
+    setState(newState);
   };
 
-  render() {
-    return (
-      <DragDropContext
-        onDragStart={this.onDragStart}
-        onDragEnd={this.onDragEnd}
-      >
-        <Container>
-          {
-            this.state.columnOrder.map((columnId, index) => {
-              const column = this.state.columns[columnId];
-              const tasks = column.taskIds.map((taskId) => this.state.tasks[taskId]);
-              const isDropDisabled = index < this.state.homeIndex;
 
-              return <Column key={column.id} column={column} tasks={tasks} isDropDisabled={isDropDisabled} />;
-            })
-          }
-        </Container>
-      </DragDropContext>
-    );
-  }
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="all-columns" direction="horizontal" type="column">
+        {(provided) => (
+          <Container {...provided.droppableProps} ref={provided.innerRef}>
+            {
+                state.columnOrder.map((columnId, index) => {
+                  const column = state.columns[columnId];
+                  const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+
+                  return <Column key={column.id} column={column} tasks={tasks} index={index} />;
+                })
+              }
+            {provided.placeholder}
+          </Container>
+        )}
+
+      </Droppable>
+    </DragDropContext>
+  );
 }
 
 ReactDOM.render(<App />, document.getElementById('root'));

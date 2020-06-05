@@ -17,7 +17,9 @@
   "rules": {
       "no-case-declarations": "off",
       "react/prop-types": "off",
-      "no-console": "off"
+      "no-console": "off",
+      "max-len": "off",
+      "react/jsx-props-no-spreading": "off"
   },
   "parser": "babel-eslint"
 }
