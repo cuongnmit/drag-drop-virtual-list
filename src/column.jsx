@@ -1,6 +1,6 @@
 import React from 'react';
-import styled from 'styled-components';
 import PropTypes from 'prop-types';
+import styled from 'styled-components';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import Task from './task';
 
@@ -8,19 +8,24 @@ const Container = styled.div`
     margin: 8px;
     border: 1px solid lightgrey;
     border-radius: 2px;
-    background-color: white;
+    background-color: #ebecf0;
     width: 300px;
     display: flex;
     flex-direction: column;
 `;
 const Title = styled.h3`
     padding: 8px;
+    height: 40px;
+    margin: 0;
 `;
 const TaskList = styled.div`
     padding: 8px;
     transition: background-color .2s ease;
     background-color: ${(props) => (props.isDraggingOver ? 'skyblue' : 'inherit')};
     flex-grow: 1;
+    height: calc(100% - 40px);
+    overflow-x: hidden;
+    overflow-y: scroll;
 `;
 
 function Column({ column, index, tasks }) {

@@ -8,16 +8,15 @@ const Container = styled.div`
   padding: 8px;
   margin-bottom: 8px;
   background-color: ${(props) => (props.isDragging ? 'lightgreen' : 'white')};
-  display: flex;
+  display: grid;
+  grid-template-columns: 65px 1fr;
+  align-items: center;
+  word-break: break-all;
 `;
 
-const Handle = styled.div`
-  width 20px;
-  height: 20px;
-  background-color: orange;
-  border-radius: 4px;
-  margin-right: 8px;
-`;
+function ucFirst(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 function Task({ task, index }) {
   return (
@@ -29,8 +28,8 @@ function Task({ task, index }) {
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
-          <Handle />
-          {task.content}
+          <span className="text-bold">{ucFirst(task.id)}</span>
+          <span className="text-name">{task.content}</span>
         </Container>
       )}
     </Draggable>

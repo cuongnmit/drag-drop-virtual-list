@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-import '@atlaskit/css-reset';
+// import '@atlaskit/css-reset';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
 import initialData from './initial-data';
 import Column from './column';
+import './main.css';
 
 const Container = styled.div`
   display: flex;
   flex-direction: row;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  padding: 25px;
 `;
 
 function App() {
   const [state, setState] = useState(initialData);
 
   const onDragEnd = (result) => {
-    setState({ homeIndex: null });
     const {
       destination, source, draggableId, type,
     } = result;
@@ -96,7 +100,11 @@ function App() {
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable droppableId="all-columns" direction="horizontal" type="column">
+      <Droppable
+        droppableId="all-columns"
+        direction="horizontal"
+        type="column"
+      >
         {(provided) => (
           <Container {...provided.droppableProps} ref={provided.innerRef}>
             {
