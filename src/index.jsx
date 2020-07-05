@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import ReactDOM from 'react-dom';
-// import '@atlaskit/css-reset';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import styled from 'styled-components';
-import initialData from './initial-data';
-import Column from './column';
+
 import './main.css';
+import Column from './column';
+import initialData from './initial-data';
 
 const Container = styled.div`
   display: flex;

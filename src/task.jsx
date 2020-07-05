@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Draggable } from 'react-beautiful-dnd';
+
+import { ucFirst, getStyle } from './utils';
 
 const Container = styled.div`
   border: 1px solid lightgrey;
@@ -14,25 +15,23 @@ const Container = styled.div`
   word-break: break-all;
 `;
 
-function ucFirst(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function Task({ task, index }) {
+function Task({
+  provided,
+  isDragging,
+  task,
+  style,
+}) {
   return (
-    <Draggable draggableId={task.id} index={index}>
-      {(provided, snapshot) => (
-        <Container
-          {...provided.draggableProps}
-          {...provided.dragHandleProps}
-          ref={provided.innerRef}
-          isDragging={snapshot.isDragging}
-        >
-          <span className="text-bold">{ucFirst(task.id)}</span>
-          <span className="text-name">{task.content}</span>
-        </Container>
-      )}
-    </Draggable>
+    <Container
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      ref={provided.innerRef}
+      isDragging={isDragging}
+      style={getStyle(provided, style)}
+    >
+      <span className="text-bold">{ucFirst(task.id)}</span>
+      <span className="text-name">{task.content}</span>
+    </Container>
   );
 }
 
