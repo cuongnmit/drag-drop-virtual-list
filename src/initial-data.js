@@ -1,9 +1,13 @@
 import { loremIpsum } from 'lorem-ipsum';
 
 const length = 99;
+const sentences = [1, 2, 3];
 const tasks = Array.from({ length }, (_, index) => ({
   id: `task-${index}`,
-  content: loremIpsum(),
+  content: loremIpsum({
+    count: sentences[Math.floor(Math.random() * sentences.length)],
+    units: 'sentences',
+  }),
 }));
 
 const taskIds = tasks.map(({ id }) => id);

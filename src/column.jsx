@@ -2,8 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { List } from 'react-virtualized';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { List, CellMeasurer, CellMeasurerCache } from 'react-virtualized';
 
 import Task from './task';
 import { getBackgroundColor } from './utils';
@@ -17,41 +17,68 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
 `;
+
 const Title = styled.h3`
     padding: 8px;
     height: 40px;
     margin: 0;
 `;
 
-const getRowRender = (tasks) => ({ index, style }) => {
-  const task = tasks[index];
+function Column({ column, index, tasks }) {
+  const cache = new CellMeasurerCache({
+    fixedWidth: true,
+    minHeight: 75,
+  });
 
-  if (!task) return null;
-  const grid = 8;
+  const getRowRender = (_tasks) => ({
+    key,
+    parent,
+    style,
+    index: taskIndex,
+  }) => {
+    const task = _tasks[taskIndex];
 
-  const patchedStyle = {
-    ...style,
-    left: style.left + grid,
-    top: style.top + grid,
-    width: `calc(${style.width} - ${grid * 2}px)`,
-    height: style.height - grid,
+    if (!task) return null;
+    const grid = 8;
+
+    const patchedStyle = {
+      ...style,
+      left: style.left + grid,
+      // top: style.top + grid,
+      width: `calc(${style.width} - ${grid * 2}px)`,
+      height: Number.isNaN(style.height) ? style.height - grid : style.height,
+    };
+
+    return (
+      <CellMeasurer
+        cache={cache}
+        columnIndex={0}
+        key={key}
+        parent={parent}
+        rowIndex={taskIndex}
+      >
+        {({ registerChild }) => (
+          <Draggable
+            draggableId={task.id}
+            index={taskIndex}
+            key={task.id}
+            style={style}
+          >
+            {(provided, snapshot) => (
+              <Task
+                provided={provided}
+                isDragging={snapshot.isDragging}
+                task={task}
+                style={patchedStyle}
+                ref={registerChild}
+              />
+            )}
+          </Draggable>
+        )}
+      </CellMeasurer>
+    );
   };
 
-  return (
-    <Draggable draggableId={task.id} index={index} key={task.id}>
-      {(provided, snapshot) => (
-        <Task
-          provided={provided}
-          isDragging={snapshot.isDragging}
-          task={task}
-          style={patchedStyle}
-        />
-      )}
-    </Draggable>
-  );
-};
-
-function Column({ column, index, tasks }) {
   return (
     <Draggable draggableId={column.id} index={index}>
       {(draggaleProvided) => (
@@ -78,10 +105,12 @@ function Column({ column, index, tasks }) {
 
               return (
                 <List
+                  deferredMeasurementCache={cache}
                   height={document.documentElement.clientHeight - 40}
+                  overscanRowCount={0}
                   rowCount={itemCount}
-                  rowHeight={110}
-                  width={300}
+                  rowHeight={cache.rowHeight}
+                  width={298}
                   ref={(ref) => {
                     if (ref) {
                       // eslint-disable-next-line react/no-find-dom-node
