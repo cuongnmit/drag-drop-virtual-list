@@ -12,7 +12,6 @@ const Container = styled.div`
   flex-direction: row;
   height: 100vh;
   width: 100%;
-  overflow: hidden;
   padding: 25px;
 `;
 

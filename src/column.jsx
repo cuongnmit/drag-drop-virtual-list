@@ -46,7 +46,7 @@ function Column({ column, index, tasks }) {
       left: style.left + grid,
       // top: style.top + grid,
       width: `calc(${style.width} - ${grid * 2}px)`,
-      height: Number.isNaN(style.height) ? style.height - grid : style.height,
+      height: style.height === 'auto' ? style.height : style.height - grid,
     };
 
     return (

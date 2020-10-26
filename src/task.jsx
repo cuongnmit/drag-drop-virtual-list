@@ -12,6 +12,7 @@ const Container = styled.div`
   grid-template-columns: 65px 1fr;
   align-items: center;
   word-break: break-all;
+  margin-bottom: 8px;
 `;
 
 function Task({
