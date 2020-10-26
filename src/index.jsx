@@ -5,14 +5,18 @@ import styled from 'styled-components';
 
 import './main.css';
 import Column from './column';
+import Header from './header';
+import Sidebar from './sidebar';
+
 import initialData from './initial-data';
 
 const Container = styled.div`
   display: flex;
   flex-direction: row;
-  height: 100vh;
-  width: 100%;
-  padding: 25px;
+  position: fixed;
+  height: calc(100vh - 50px);
+  width: calc(100vw  - 300px);
+  overflow-x: scroll;
 `;
 
 function App() {
@@ -98,15 +102,23 @@ function App() {
 
 
   return (
-    <DragDropContext onDragEnd={onDragEnd}>
-      <Droppable
-        droppableId="all-columns"
-        direction="horizontal"
-        type="column"
-      >
-        {(provided) => (
-          <Container {...provided.droppableProps} ref={provided.innerRef}>
-            {
+    <div className="main-container">
+      <div className="head">
+        <Header />
+      </div>
+      <div className="left">
+        <Sidebar />
+      </div>
+      <div className="right">
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable
+            droppableId="all-columns"
+            direction="horizontal"
+            type="column"
+          >
+            {(provided) => (
+              <Container {...provided.droppableProps} ref={provided.innerRef}>
+                {
                 state.columnOrder.map((columnId, index) => {
                   const column = state.columns[columnId];
                   const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
@@ -114,12 +126,14 @@ function App() {
                   return <Column key={column.id} column={column} tasks={tasks} index={index} />;
                 })
               }
-            {provided.placeholder}
-          </Container>
-        )}
+                {provided.placeholder}
+              </Container>
+            )}
 
-      </Droppable>
-    </DragDropContext>
+          </Droppable>
+        </DragDropContext>
+      </div>
+    </div>
   );
 }
 

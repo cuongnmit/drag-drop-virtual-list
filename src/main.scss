@@ -36,3 +36,70 @@ body {
 .text-bold {
   font-weight: 700;
 }
+
+.main-container {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  grid-template:
+    'sidebar header'
+    'sidebar content';
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 50px 1fr;
+
+  .head {
+    grid-area: header;
+    color: #222;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 20px;
+    align-self: center;
+    width: calc(100vw - 300px);
+  }
+
+  .left {
+    grid-area: sidebar;
+
+    .sidebar {
+      &__title {
+        color: #222;
+        font-size: 20px;
+        font-weight: 700;
+        display: block;
+        padding: 10px;
+        text-transform: uppercase;
+      }
+    }
+
+    ul {
+      display: flex;
+      flex-direction: column;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      text-transform: uppercase;
+      font-weight: 400;
+
+      li {
+        height: 50px;
+        width: 100%;
+        cursor: pointer;
+        padding: 5px 10px;
+        display: flex;
+        align-items: center;
+        border-top-right-radius: 5px;
+        border-bottom-right-radius: 5px;
+
+        &:hover {
+          color: #fff;
+          background-color: #aaa;
+        }
+      }
+    }
+  }
+
+  .right {
+    grid-area: content;
+  }
+}
