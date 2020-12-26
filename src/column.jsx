@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import { List, CellMeasurer, CellMeasurerCache } from 'react-virtualized';
+import { List } from 'react-virtualized';
 
 import Task from './task';
 import { getBackgroundColor } from './utils';
 
 const Container = styled.div`
-    margin: 8px;
+    margin-right: 8px;
     border: 1px solid lightgrey;
     border-radius: 2px;
     background-color: #ebecf0;
@@ -24,22 +24,19 @@ const Title = styled.h3`
     margin: 0;
 `;
 
-function Column({ column, index, tasks }) {
-  const cache = new CellMeasurerCache({
-    fixedWidth: true,
-    minHeight: 75,
-  });
+const grid = 8;
 
-  const getRowRender = (_tasks) => ({
-    key,
-    parent,
-    style,
-    index: taskIndex,
-  }) => {
+function Column({
+  column,
+  index,
+  tasks,
+}) {
+  const getRowRender = (_tasks) => ({ style, index: taskIndex }) => {
     const task = _tasks[taskIndex];
 
-    if (!task) return null;
-    const grid = 8;
+    if (!task) {
+      return null;
+    }
 
     const patchedStyle = {
       ...style,
@@ -50,32 +47,21 @@ function Column({ column, index, tasks }) {
     };
 
     return (
-      <CellMeasurer
-        cache={cache}
-        columnIndex={0}
-        key={key}
-        parent={parent}
-        rowIndex={taskIndex}
+      <Draggable
+        draggableId={task.id}
+        index={taskIndex}
+        key={task.id}
+        style={style}
       >
-        {({ registerChild }) => (
-          <Draggable
-            draggableId={task.id}
-            index={taskIndex}
-            key={task.id}
-            style={style}
-          >
-            {(provided, snapshot) => (
-              <Task
-                provided={provided}
-                isDragging={snapshot.isDragging}
-                task={task}
-                style={patchedStyle}
-                ref={registerChild}
-              />
-            )}
-          </Draggable>
+        {(provided, snapshot) => (
+          <Task
+            provided={provided}
+            isDragging={snapshot.isDragging}
+            task={task}
+            style={patchedStyle}
+          />
         )}
-      </CellMeasurer>
+      </Draggable>
     );
   };
 
@@ -83,7 +69,7 @@ function Column({ column, index, tasks }) {
     <Draggable draggableId={column.id} index={index}>
       {(draggaleProvided) => (
         <Container {...draggaleProvided.draggableProps} ref={draggaleProvided.innerRef}>
-          <Title {...draggaleProvided.dragHandleProps}>{column.title}</Title>
+          <Title {...draggaleProvided.dragHandleProps}>{`${column.title} (${tasks.length})`}</Title>
           <Droppable
             type="task"
             droppableId={column.id}
@@ -105,11 +91,10 @@ function Column({ column, index, tasks }) {
 
               return (
                 <List
-                  deferredMeasurementCache={cache}
                   height={document.documentElement.clientHeight - 40}
                   overscanRowCount={0}
                   rowCount={itemCount}
-                  rowHeight={cache.rowHeight}
+                  rowHeight={110}
                   width={298}
                   ref={(ref) => {
                     if (ref) {

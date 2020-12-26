@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { AutoSizer, ColumnSizer, Grid } from 'react-virtualized';
 import styled from 'styled-components';
 
 import './main.css';
@@ -11,16 +12,24 @@ import Sidebar from './sidebar';
 import initialData from './initial-data';
 
 const Container = styled.div`
-  display: flex;
-  flex-direction: row;
-  position: fixed;
   height: calc(100vh - 50px);
-  width: calc(100vw  - 300px);
+  width: calc(100vw  - 308px);
   overflow-x: scroll;
 `;
 
 function App() {
   const [state, setState] = useState(initialData);
+  const [documentHeight, setDocumentHeight] = useState(document.documentElement.clientHeight);
+
+  const onResize = () => {
+    setDocumentHeight(document.documentElement.clientHeight);
+  };
+
+  useEffect(() => {
+    window.addEventListener('resize', onResize);
+
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const onDragEnd = (result) => {
     const {
@@ -100,6 +109,27 @@ function App() {
     setState(newState);
   };
 
+  const columnCount = state.columnOrder.length;
+
+  const cellRenderer = ({ columnIndex, style }) => {
+    const columnId = state.columnOrder[columnIndex];
+
+    const column = state.columns[columnId];
+    const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+
+    const patchedStyle = {
+      ...style,
+      padding: '8px',
+      left: style.left,
+    };
+
+    return (
+      <div style={patchedStyle} key={column.id}>
+        <Column column={column} tasks={tasks} index={columnIndex} style={style} />
+      </div>
+    );
+  };
+
 
   return (
     <div className="main-container">
@@ -118,15 +148,42 @@ function App() {
           >
             {(provided) => (
               <Container {...provided.droppableProps} ref={provided.innerRef}>
-                {
-                state.columnOrder.map((columnId, index) => {
-                  const column = state.columns[columnId];
-                  const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
+                <AutoSizer>
+                  {({ width }) => (
+                    <ColumnSizer
+                      columnMaxWidth={298}
+                      columnMinWidth={298}
+                      columnCount={columnCount}
+                      key="GridColumnSizer"
+                      width={width}
+                    >
+                      {({ adjustedWidth, columnWidth, registerChild }) => (
+                        <>
+                          <Grid
+                            ref={registerChild}
+                            columnWidth={columnWidth}
+                            columnCount={columnCount}
+                            height={documentHeight - 69}
+                            cellRenderer={cellRenderer}
+                            rowHeight={documentHeight - 87}
+                            rowCount={1}
+                            width={adjustedWidth}
+                            innerRef={provided.innerRef}
+                          />
+                        </>
+                      )}
+                    </ColumnSizer>
+                  )}
+                </AutoSizer>
+                {/* {
+                  state.columnOrder.map((columnId, index) => {
+                    const column = state.columns[columnId];
+                    const tasks = column.taskIds.map((taskId) => state.tasks[taskId]);
 
-                  return <Column key={column.id} column={column} tasks={tasks} index={index} />;
-                })
-              }
-                {provided.placeholder}
+                    return <Column key={column.id} column={column} tasks={tasks} index={index} />;
+                  })
+                } */}
+                {/* { provided.placeholder } */}
               </Container>
             )}
 

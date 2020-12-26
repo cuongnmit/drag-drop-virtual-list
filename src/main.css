@@ -57,22 +57,39 @@ body {
   font-weight: 700;
   font-size: 20px;
   -ms-flex-item-align: center;
-      -ms-grid-row-align: center;
       align-self: center;
   width: calc(100vw - 300px);
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: #f6f8f9;
 }
 
 .main-container .left {
   grid-area: sidebar;
+  background-color: #f6f8f9;
+  padding: 0 15px;
 }
 
 .main-container .left .sidebar__title {
   color: #222;
   font-size: 20px;
   font-weight: 700;
-  display: block;
-  padding: 10px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   text-transform: uppercase;
+  height: 50px;
 }
 
 .main-container .left ul {
@@ -101,8 +118,9 @@ body {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-radius: 5px;
+  -webkit-transition: all ease-out 0.2s;
+  transition: all ease-out 0.2s;
 }
 
 .main-container .left ul li:hover {
@@ -112,5 +130,13 @@ body {
 
 .main-container .right {
   grid-area: content;
+}
+
+.text-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }
 /*# sourceMappingURL=main.css.map */
