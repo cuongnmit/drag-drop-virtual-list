@@ -9,7 +9,6 @@ import Task from './task';
 import { getBackgroundColor } from './utils';
 
 const Container = styled.div`
-    margin-right: 8px;
     border: 1px solid lightgrey;
     border-radius: 2px;
     background-color: #ebecf0;
@@ -91,7 +90,7 @@ function Column({
 
               return (
                 <List
-                  height={document.documentElement.clientHeight - 40}
+                  height={document.documentElement.clientHeight - 103}
                   overscanRowCount={0}
                   rowCount={itemCount}
                   rowHeight={110}

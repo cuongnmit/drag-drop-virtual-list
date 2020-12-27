@@ -11,11 +11,7 @@ import Sidebar from './sidebar';
 
 import initialData from './initial-data';
 
-const Container = styled.div`
-  height: calc(100vh - 50px);
-  width: calc(100vw  - 308px);
-  overflow-x: scroll;
-`;
+const Container = styled.div``;
 
 function App() {
   const [state, setState] = useState(initialData);
@@ -119,8 +115,7 @@ function App() {
 
     const patchedStyle = {
       ...style,
-      padding: '8px',
-      left: style.left,
+      width: `calc(${style.width} - 16px)`,
     };
 
     return (
@@ -158,19 +153,17 @@ function App() {
                       width={width}
                     >
                       {({ adjustedWidth, columnWidth, registerChild }) => (
-                        <>
-                          <Grid
-                            ref={registerChild}
-                            columnWidth={columnWidth}
-                            columnCount={columnCount}
-                            height={documentHeight - 69}
-                            cellRenderer={cellRenderer}
-                            rowHeight={documentHeight - 87}
-                            rowCount={1}
-                            width={adjustedWidth}
-                            innerRef={provided.innerRef}
-                          />
-                        </>
+                        <Grid
+                          ref={registerChild}
+                          columnWidth={columnWidth}
+                          columnCount={columnCount}
+                          height={documentHeight - 51}
+                          cellRenderer={cellRenderer}
+                          rowHeight={documentHeight - 64}
+                          rowCount={1}
+                          width={adjustedWidth}
+                          innerRef={provided.innerRef}
+                        />
                       )}
                     </ColumnSizer>
                   )}
@@ -183,7 +176,7 @@ function App() {
                     return <Column key={column.id} column={column} tasks={tasks} index={index} />;
                   })
                 } */}
-                {/* { provided.placeholder } */}
+                { provided.placeholder }
               </Container>
             )}
 
